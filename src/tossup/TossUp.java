@@ -6,9 +6,9 @@ public class TossUp
 {
     static Scanner kbReader = new Scanner(System.in);
     static ArrayList<Player> list = new ArrayList<>();
-    static int[] points;
     static int players;
     static boolean finished = false;
+    static boolean quitGame = false;
     
     public static void main(String[] args) 
     {
@@ -37,54 +37,109 @@ public class TossUp
     {                
         createPlayer(players);
         System.out.println(" ");
-        
+        int end = 0;
         while(!finished)
         {
             for(int a = 0; a < players; a++)
             {
                 Player temp1 = list.get(a);
-                boolean turnFinished = false;
-                while(!turnFinished)
+                takeTurn(temp1);
+                if(temp1.total() == 100)
                 {
-                    System.out.println("Hey " + temp1.getName() + ", it's your turn! What would you like to do?");
-                    System.out.println("[Roll, End Turn]");
-                    String command = kbReader.nextLine();
-                    switch(command.toLowerCase())
-                    {
-                        case "roll":
-                            temp1.RollDice();
-                            if(temp1.endTurn())
-                            {
-                                turnFinished = true;
-                                temp1.subtractPoints();
-                                System.out.println("Oh no! You've rolled all 6's, which means you lose the points you've gained this turn! :(");
-                                System.out.println("Your total is now back to where it was before your turn: " + temp1.total() + " points.");
-                                System.out.println("Hopefully you'll be more lucky next turn! NEXT!!!");
-                                break;
-                            }
-                            else if(temp1.almostEndTurn())
-                            {
-                                System.out.println("Whoa there! You may have not rolled all 6's, but you didn't roll any dice that gives you points!");
-                                System.out.println("To keep going or not to keep going...that is the question...");
-                                break;
-                            }
-                            else
-                            {
-                                System.out.println("Nice roll! You've rolled " + temp1.getRollPoints() + " good die/dice and your points this turn is now " + temp1.getTurn() + " points!");
-                                System.out.println("Care to try your luck once more?");
-                            }                            
-                            break;
-                        case "end turn":
-                            System.out.println("You have decided to end your turn and you are now at " + temp1.total() + " points. Are you scared? Or was that simply a strategic move? I guess we'll see...");
-                            System.out.println(" ");
-                            turnFinished = true;
-                            temp1.resetTurn();
-                            break;
-                    }
+                    finished = true;
+                }
+                end = a;
+            }
+        }
+        
+        if(quitGame == true)
+        {
+            Player loser = list.get(end);
+            System.out.println("Well " +  loser.getName() + " is a butt and just forfeited the entire game! Don't worry, everyone is a winner! Except you " + loser.getName() + ".");
+            System.out.println("You're a loser.");
+        }
+        else//end game
+        {
+            Player temp2 = list.get(end);
+            String possChamp = temp2.getName();
+            System.out.println("WHOAAAAAAAAA!!!" + possChamp + " HAS JUST ACTIVATED THE FINAL ROUND!!!");
+            System.out.println("PLAYERS, NOW IS YOUR CHANCE! Everyone except " + possChamp + " will get a final chance to try and beat " + possChamp + "'s score! We will go in order...");
+            if(end == 0)
+            {
+                for(int a = end + 1; a < players; a++)
+                {
+                    Player temp1 = list.get(a);
+                    takeTurn(temp1);
+                }
+            }
+            else
+            {
+                for(int a = end + 1; a < players; a++)
+                {
+                    Player temp1 = list.get(a);
+                    takeTurn(temp1);
+                }
+                for(int a = 0; a < end; a++)
+                {
+                    Player temp1 = list.get(a);
+                    takeTurn(temp1);
                 }
             }
         }
-    }    
+    }
+    
+    private static void takeTurn(Player temp)//method called for a player to take their turn
+    {
+        boolean turnFinished = false;
+        while(!turnFinished)
+        {
+            System.out.println("Hey " + temp.getName() + ", it's your turn! What would you like to do?");
+            System.out.println("[Roll, End Turn]");
+            String command = kbReader.nextLine();
+            switch(command.toLowerCase())
+            {
+                case "roll":
+                    temp.RollDice();
+                    if(temp.endTurn())
+                    {
+                        turnFinished = true;
+                        temp.subtractPoints();
+                        System.out.println("Oh no! You've rolled all 6's, which means you lose the points you've gained this turn! :(");
+                        System.out.println("Your total is now back to where it was before your turn: " + temp.total() + " points.");
+                        System.out.println("Hopefully you'll be more lucky next turn! NEXT!!!");
+                        break;
+                    }
+                    else if(temp.almostEndTurn())
+                    {
+                        System.out.println("Whoa there! You may have not rolled all 6's, but you didn't roll any dice that gives you points!");
+                        System.out.println("To keep going or not to keep going...that is the question...");
+                        break;
+                    }
+                    else
+                    {
+                        System.out.println("Nice roll! You've rolled " + temp.getRollPoints() + " good die/dice and your points this turn is now " + temp.getTurn() + " points!");
+                        System.out.println("Care to try your luck once more?");
+                    }                            
+                    break;
+                case "end turn":
+                    System.out.println("You have decided to end your turn and you are now at " + temp.total() + " points. Are you scared? Or was that simply a strategic move? I guess we'll see...");
+                    System.out.println(" ");
+                    turnFinished = true;
+                    temp.resetTurn();
+                    break;
+                case "quit":
+                    finished = true;
+                    quitGame = true;
+                case "check score":
+                    for(int a = 0; a < players; a++)
+                    {
+                        Player tempS = list.get(a);
+                        System.out.println(tempS.getName() + ": " + tempS.total() + " points.");
+                    }
+                    
+            }
+        }
+    }
     
     private static void createPlayer(int x)
     {        
