@@ -43,7 +43,7 @@ public class Dice extends Die
             {
                 caution++;//the die lands on 4 or 5
             }
-            else
+            else if(roll == 6)
             {
                 redLight++;//the die lands on a 6
             }
