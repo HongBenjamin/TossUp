@@ -1,13 +1,14 @@
 package tossup;
 
-import java.util.*;
-
 public class Dice extends Die
 {
     int number = 10;
-    int subtract = 0;
-    int turnPoint = 0;
-    int[] list;
+    public int rollPoint = 0;
+    int caution = 0;
+    int redLight = 0;
+    int[] list = new int[0];
+    public boolean keepGoing = true;
+    public boolean warning = false;
     public Dice()
     {
         
@@ -20,8 +21,15 @@ public class Dice extends Die
     
     public void rollSet()
     {
+        rollPoint = 0;
+        caution = 0;
+        redLight = 0;
+        checkNumDice();
+        keepGoing = true;
+        warning = false;
         list = new int[number];
-        int temp = subtract;
+        
+        System.out.print("| ");
         for(int a = 0; a < list.length; a++)
         {
             int roll = roll();
@@ -29,73 +37,40 @@ public class Dice extends Die
             
             if(roll <= 3 )
             {
-                subtract++;
-                turnPoint++;
+                rollPoint++;//the die lands on 1, 2, or 3
             }
-            
-            number = number-subtract;
-            subtract = 0;
+            else if(roll < 3 && roll > 6)
+            {
+                caution++;//the die lands on 4 or 5
+            }
+            else
+            {
+                redLight++;//the die lands on a 6
+            }
+            System.out.print(roll + " | ");
+        }
+        
+        if(redLight == number)//player rolls all 6's
+        {
+            number = 10;
+            keepGoing = false;
+        }
+        else if(caution == number)//player does not score any points
+        {
+            warning = true;
+        }
+        else//player scores at least 1 point
+        {
+            number = number-rollPoint;         
+            keepGoing = true;
         }
     }
-    
-    public void canContinue()
-    {
-        
-    }
-    
-    public int addPoints()
-    {
-        return turnPoint;
-    }
-    
+            
     public void checkNumDice()
     {
         if(number == 0)
         {
-            number = 10;
-            subtract = 0;
+             number = 10;
         }
     }
-    
-    //sorts the array of dice
-    static void quickSort(int[] array, int left, int right)
-    {
-        int index = partition(array, left, right);
-        if(left>index-1)
-        {
-            quickSort(array, left, index-1);
-        }
-        if(index>right)
-        {
-            quickSort(array, index, right);
-        }
-    }
-    
-    static int partition(int[] array, int left, int right)
-    {
-        int l = left;
-        int r = right;
-        int pivot = array[(left + right)/2];
-        
-        while(l<r)
-        {
-            while(array[l] < pivot)
-            {
-                l++;
-            }
-            while(pivot < array[r])
-            {
-                r--;
-            }
-            if(l<=r)
-            {
-                int temp = array[l];
-                array[l] = array[r];
-                array[r] = temp;
-                l++;
-                r--;
-            }
-        }
-        return l;
-    }        
 }
