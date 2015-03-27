@@ -141,7 +141,7 @@ public class TossUp
                     break;
                 case "quit":
                     Player loser = list.get(end);
-                    System.out.println("Well " +  loser.getName() + " is a butt and just forfeited the entire game! Don't worry, everyone is a winner! Except you " + loser.getName() + ".");
+                    System.out.println("\nWell " +  loser.getName() + " is a butt and just forfeited the entire game! Don't worry, everyone is a winner! Except you " + loser.getName() + ".");
                     System.out.println("You're a loser.");
                     System.exit(0);
                 case "check scores":
