@@ -9,6 +9,7 @@ public class TossUp
     static int players;
     static boolean finished = false;
     static boolean quitGame = false;
+    static int end = 0;
     
     public static void main(String[] args) 
     {
@@ -52,59 +53,51 @@ public class TossUp
                 }                
             }
         }
-        
-        if(quitGame == true)
+
+        Player temp2 = list.get(end);
+        String possChamp = temp2.getName();
+        System.out.println("WHOAAAAAAAAA!!! " + possChamp.toUpperCase() + " HAS JUST ACTIVATED THE FINAL ROUND!!!");
+        System.out.println("PLAYERS, NOW IS YOUR CHANCE! Everyone except " + possChamp + " will get a final chance to try and beat " + possChamp + "'s score! We will go in order...");
+
+        if(end == 0)//if the first person to start the game started the end game process
         {
-            Player loser = list.get(end);
-            System.out.println("Well " +  loser.getName() + " is a butt and just forfeited the entire game! Don't worry, everyone is a winner! Except you " + loser.getName() + ".");
-            System.out.println("You're a loser.");
-        }
-        else//end game
-        {
-            Player temp2 = list.get(end);
-            String possChamp = temp2.getName();
-            System.out.println("WHOAAAAAAAAA!!! " + possChamp.toUpperCase() + " HAS JUST ACTIVATED THE FINAL ROUND!!!");
-            System.out.println("PLAYERS, NOW IS YOUR CHANCE! Everyone except " + possChamp + " will get a final chance to try and beat " + possChamp + "'s score! We will go in order...");
-            
-            if(end == 0)//if the first person to start the game started the end game process
-            {
-                for(int a = end + 1; a < players; a++)
-                {
-                    Player temp1 = list.get(a);
-                    takeTurn(temp1);
-                }
-            }
-            else//if another person started the end game process
-            {
-                for(int a = end + 1; a < players; a++)
-                {
-                    Player temp1 = list.get(a);
-                    takeTurn(temp1);
-                }
-                for(int a = 0; a < end; a++)
-                {
-                    Player temp1 = list.get(a);
-                    takeTurn(temp1);
-                }
-            }
-            
-            int topScore = 0;
-            int tempScore = 0;
-            int topPlayer = 0;
-            for(int a = 0; a < players; a++)
+            for(int a = end + 1; a < players; a++)
             {
                 Player temp1 = list.get(a);
-                tempScore = temp1.total();
-                if(tempScore > topScore)
-                {
-                    topScore = tempScore;
-                    topPlayer = a;
-                }
+                takeTurn(temp1);
             }
-            
-            Player winner = list.get(topPlayer);
-            System.out.println("Congratulations " + winner.getName() + "! You are the winner with " + topScore + "! Thanks for playing everyone!!!");
         }
+        else//if another person started the end game process
+        {
+            for(int a = end + 1; a < players; a++)
+            {
+                Player temp1 = list.get(a);
+                takeTurn(temp1);
+            }
+            for(int a = 0; a < end; a++)
+            {
+                Player temp1 = list.get(a);
+                takeTurn(temp1);
+            }
+        }
+
+        int topScore = 0;
+        int tempScore = 0;
+        int topPlayer = 0;
+        for(int a = 0; a < players; a++)
+        {
+            Player temp1 = list.get(a);
+            tempScore = temp1.total();
+            if(tempScore > topScore)
+            {
+                topScore = tempScore;
+                topPlayer = a;
+            }
+        }
+
+        Player winner = list.get(topPlayer);
+        System.out.println("Congratulations " + winner.getName() + "! You are the winner with " + topScore + "!");
+        System.out.println("And that's the end of the game! Thanks for playing everyone!!!");        
     }
     
     private static void takeTurn(Player temp)//method called for a player to take their turn
@@ -147,8 +140,10 @@ public class TossUp
                     temp.resetTurn();
                     break;
                 case "quit":
-                    finished = true;
-                    quitGame = true;
+                    Player loser = list.get(end);
+                    System.out.println("Well " +  loser.getName() + " is a butt and just forfeited the entire game! Don't worry, everyone is a winner! Except you " + loser.getName() + ".");
+                    System.out.println("You're a loser.");
+                    System.exit(0);
                 case "check scores":
                     System.out.println(" ");
                     for(int a = 0; a < players; a++)
