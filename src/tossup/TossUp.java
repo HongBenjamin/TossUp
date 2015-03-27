@@ -38,17 +38,18 @@ public class TossUp
         createPlayer(players);
         System.out.println(" ");
         int end = 0;
-        while(!finished)
+        while(finished == false)
         {
             for(int a = 0; a < players; a++)
             {
                 Player temp1 = list.get(a);
                 takeTurn(temp1);
-                if(temp1.total() == 100)
+                if(temp1.total() >= 100)
                 {
                     finished = true;
-                }
-                end = a;
+                    end = a;
+                    a = players;
+                }                
             }
         }
         
@@ -62,9 +63,10 @@ public class TossUp
         {
             Player temp2 = list.get(end);
             String possChamp = temp2.getName();
-            System.out.println("WHOAAAAAAAAA!!!" + possChamp + " HAS JUST ACTIVATED THE FINAL ROUND!!!");
+            System.out.println("WHOAAAAAAAAA!!! " + possChamp.toUpperCase() + " HAS JUST ACTIVATED THE FINAL ROUND!!!");
             System.out.println("PLAYERS, NOW IS YOUR CHANCE! Everyone except " + possChamp + " will get a final chance to try and beat " + possChamp + "'s score! We will go in order...");
-            if(end == 0)
+            
+            if(end == 0)//if the first person to start the game started the end game process
             {
                 for(int a = end + 1; a < players; a++)
                 {
@@ -72,7 +74,7 @@ public class TossUp
                     takeTurn(temp1);
                 }
             }
-            else
+            else//if another person started the end game process
             {
                 for(int a = end + 1; a < players; a++)
                 {
@@ -85,6 +87,23 @@ public class TossUp
                     takeTurn(temp1);
                 }
             }
+            
+            int topScore = 0;
+            int tempScore = 0;
+            int topPlayer = 0;
+            for(int a = 0; a < players; a++)
+            {
+                Player temp1 = list.get(a);
+                tempScore = temp1.total();
+                if(tempScore > topScore)
+                {
+                    topScore = tempScore;
+                    topPlayer = a;
+                }
+            }
+            
+            Player winner = list.get(topPlayer);
+            System.out.println("Congratulations " + winner.getName() + "! You are the winner with " + topScore + "! Thanks for playing everyone!!!");
         }
     }
     
@@ -94,7 +113,7 @@ public class TossUp
         while(!turnFinished)
         {
             System.out.println("Hey " + temp.getName() + ", it's your turn! What would you like to do?");
-            System.out.println("[Roll, End Turn]");
+            System.out.println("[Roll, End Turn, Check Scores, Quit]");
             String command = kbReader.nextLine();
             switch(command.toLowerCase())
             {
@@ -130,13 +149,14 @@ public class TossUp
                 case "quit":
                     finished = true;
                     quitGame = true;
-                case "check score":
+                case "check scores":
+                    System.out.println(" ");
                     for(int a = 0; a < players; a++)
                     {
                         Player tempS = list.get(a);
                         System.out.println(tempS.getName() + ": " + tempS.total() + " points.");
                     }
-                    
+                    System.out.println(" ");                    
             }
         }
     }
